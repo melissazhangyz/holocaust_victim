@@ -36,4 +36,4 @@ cleaned_data <-
 unique(cleaned_data$Religion)
 head(cleaned_data)
 #### Save data ####
-write_csv(cleaned_data, "data/raw_data/analysis_data.csv")
+write_csv(cleaned_data, "data//analysis_data.csv")

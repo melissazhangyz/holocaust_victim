@@ -1,13 +1,10 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
-author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+title: "Data analysis of Holocaust Victims"
+subtitle: "Shina app applied for interactive graph"
+author: Yingzhi Zhang
+thanks: "Code and data are available at:https://github.com/melissazhangyz/holocaust_victim."
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -19,7 +16,7 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
-library(palmerpenguins)
+
 ```
 
 
