@@ -9,6 +9,7 @@
 
 library(shiny)
 library(DT)
+library(tidyverse)
 
 # Define UI for application
 ui <- fluidPage(
@@ -25,7 +26,8 @@ ui <- fluidPage(
     ),
     mainPanel(
       # Output: Display the interactive plot
-      plotOutput("religionPlot")
+      plotOutput("deathPlot"),
+      DTOutput("deathTable")
     )
   )
 )
@@ -34,24 +36,30 @@ ui <- fluidPage(
 # Define server logic
 server <- function(input, output) {
   
+  analysis_data <- read_csv("cleaned.csv")
+  
   # Filter data based on selected religion
-  filtered_data <- reactive({
+  filtered_data <- 
+    reactive({
     analysis_data %>% 
-      filter(Religion == input$religionInput)
+      filter(Religion == input$rr)
   })
   
   output$deathPlot <- renderPlot({
     filtered_data() %>%
       group_by(Death_Year_Month) %>%
       summarise(Deaths = n()) %>%
-      ggplot(aes(x = Death_Year_Month, y = Deaths, fill = Death_Year_Month)) +
-      geom_bar(stat = "identity") +
+      ggplot(aes(x = Death_Year_Month, y = Deaths)) +
+      geom_bar(stat = "identity", fill = "steelblue") +
       theme_minimal() +
-      labs(title = paste("Monthly Deaths for", input$religionInput),
+      labs(title = paste("Monthly Deaths for", input$rr),
            x = "Month of Death",
            y = "Number of Deaths") +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Rotate x-axis labels for better readability
   })
+  output$deathTable <- renderDT({
+    filtered_data()
+  }, options = list(pageLength = 10)) # Set initial number of rows to display
 }
 
 # Run the application 
