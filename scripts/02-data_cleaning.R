@@ -9,36 +9,31 @@
 
 #### Workspace setup ####
 library(tidyverse)
+library(lubridate)
 
 #### Clean data ####
-raw_data <- read_csv("inputs/data/plane_data.csv")
+raw_data <- read_csv("data/raw_data/raw.csv")
 
 cleaned_data <-
-  raw_data |>
-  janitor::clean_names() |>
-  select(wing_width_mm, wing_length_mm, flying_time_sec_first_timer) |>
-  filter(wing_width_mm != "caw") |>
+  raw_data %>% 
+  mutate(Religion = case_when(
+    Religion == "Catholic" | Religion == "Greek Catholic" ~ "Catholic",
+    Religion == "andere" | Religion == "Believes in God" | Religion == "Jehovah's Witness" | 
+      Religion == "Czech-Moravian" |  Religion == "Agnostic" ~ "Other",
+    Religion == "Unaffiliated" | Religion == "Unknown" ~ "Unknown",
+    Religion == "Greek Orthodox" | Religion == "Eastern Orthodox" | Religion == "Russian Orthodox" ~ "Orthodox",
+    TRUE ~ Religion
+  )) %>% 
   mutate(
-    flying_time_sec_first_timer = if_else(flying_time_sec_first_timer == "1,35",
-                                   "1.35",
-                                   flying_time_sec_first_timer)
-  ) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "490",
-                                 "49",
-                                 wing_width_mm)) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "6",
-                                 "60",
-                                 wing_width_mm)) |>
-  mutate(
-    wing_width_mm = as.numeric(wing_width_mm),
-    wing_length_mm = as.numeric(wing_length_mm),
-    flying_time_sec_first_timer = as.numeric(flying_time_sec_first_timer)
-  ) |>
-  rename(flying_time = flying_time_sec_first_timer,
-         width = wing_width_mm,
-         length = wing_length_mm
-         ) |> 
-  tidyr::drop_na()
+    `Date of Birth` = ymd(`Date of Birth`),
+    `Date of Death` = ymd(`Date of Death`),
+    # Calculate Age at Death
+    Age = round(interval(`Date of Birth`, `Date of Death`) / years(1)),
+    # Create a New Column for Year and Month of Death
+    Death_Year_Month = format(`Date of Death`, "%Y-%m")
+  )
 
+unique(cleaned_data$Religion)
+head(cleaned_data)
 #### Save data ####
-write_csv(cleaned_data, "outputs/data/analysis_data.csv")
+write_csv(cleaned_data, "data/raw_data/analysis_data.csv")
