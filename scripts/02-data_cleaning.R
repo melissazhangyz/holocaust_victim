@@ -34,7 +34,9 @@ cleaned_data <-
     Death_Year_Month = format(`Date of Death`, "%Y-%m")
   )
 
+colnames(cleaned_data)[c(1,2,3,4,5)] <- c("Last_Name", "First_Name", "Date_of_Birth", "Date_of_Death", "Birth_Place")
+
 unique(cleaned_data$Religion)
 head(cleaned_data)
 #### Save data ####
-write_csv(cleaned_data, "data/analysis_data.csv")
+write_csv(cleaned_data, "data/cleaned.csv")
