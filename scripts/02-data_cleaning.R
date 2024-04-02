@@ -12,10 +12,11 @@ library(tidyverse)
 library(lubridate)
 
 #### Clean data ####
-raw_data <- read_csv("data/raw_data/raw.csv")
+raw_data <- read_csv("data/raw.csv")
 
 cleaned_data <-
   raw_data %>% 
+  drop_na() %>% 
   mutate(Religion = case_when(
     Religion == "Catholic" | Religion == "Greek Catholic" ~ "Catholic",
     Religion == "andere" | Religion == "Believes in God" | Religion == "Jehovah's Witness" | 
@@ -36,4 +37,4 @@ cleaned_data <-
 unique(cleaned_data$Religion)
 head(cleaned_data)
 #### Save data ####
-write_csv(cleaned_data, "data//analysis_data.csv")
+write_csv(cleaned_data, "data/analysis_data.csv")
