@@ -1,8 +1,8 @@
 ---
 title: "Data analysis of Holocaust Victims"
-subtitle: "Shina app applied for interactive graph"
+subtitle: "Shiny app applied for interactive graph"
 author: Yingzhi Zhang
-thanks: "Code and data are available at:https://github.com/melissazhangyz/holocaust_victim."
+thanks: "Code and data are available at:https://github.com/melissazhangyz/holocaust_victim. Interactive graphs are available at: https://melissazhang.shinyapps.io/holocaust_victim/"
 date: today
 date-format: long
 format: pdf
@@ -16,15 +16,15 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
+library(lubridate)
+library(DT)
 
 ```
 
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
 
-The remainder of this paper is structured as follows. @sec-data....
 
 
 
