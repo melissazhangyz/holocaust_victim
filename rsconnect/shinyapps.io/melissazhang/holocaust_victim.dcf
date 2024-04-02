@@ -5,8 +5,9 @@ account: melissazhang
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 11639569
-bundleId: 8443580
+bundleId: 8443639
 url: https://melissazhang.shinyapps.io/holocaust_victim/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: 02-data_cleaning.R|LICENSE|paper/datasheet_template.pdf|paper/datasheet_template.qmd|paper/paper.pdf|paper/paper.qmd|paper/references.bib|raw.csv|README.md

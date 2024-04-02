@@ -11,7 +11,7 @@ library(shiny)
 library(DT)
 library(tidyverse)
 
-analysis_data <- read_csv("data/cleaned.csv")
+analysis_data <- read_csv("cleaned.csv")
   
 # Define UI for application
 ui <- fluidPage(
