@@ -39,4 +39,4 @@ colnames(cleaned_data)[c(1,2,3,4,5)] <- c("Last_Name", "First_Name", "Date_of_Bi
 unique(cleaned_data$Religion)
 head(cleaned_data)
 #### Save data ####
-write_csv(cleaned_data, "data/cleaned.csv")
+write_csv(cleaned_data, "holocaust_victim/cleaned.csv")
