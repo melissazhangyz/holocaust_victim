@@ -6,6 +6,8 @@ thanks: "Code and data are available at:https://github.com/melissazhangyz/holoca
 date: today
 date-format: long
 format: pdf
+mainfont: Times New Roman
+sansfont: Times New Roman
 number-sections: true
 bibliography: references.bib
 ---
@@ -18,200 +20,139 @@ bibliography: references.bib
 library(tidyverse)
 library(lubridate)
 library(DT)
+library(kableExtra)
+library(patchwork)
 
 ```
 
 
 # Introduction
+Auschwitz concentration camp, operational from 1940 until 1945, stands as a grim symbol of the Holocaust and the atrocities committed by Nazi Germany during World War II. Initially intended as a detention center for political prisoners, Auschwitz evolved into a network of camps where millions were murdered under inhumane and cruel methods, including gas chambers or succumbed to starvation, forced labor, disease, and medical experiments. It was the largest of the German Nazi concentration camps and extermination centers, where approximately 1.1 million people were killed.[@piper2000dlugoborski] The camp's liberation by Soviet troops in January 1945 revealed the extent of the Nazi regime's brutality and had a profound impact on global awareness of human rights atrocities, leading to the establishment of the Genocide Convention and the Universal Declaration of Human Rights. The Holocaust's sheer scale prompted a reevaluation of international laws regarding human rights and genocide, significantly influencing post-war international relations and the establishment of organizations committed to preventing such atrocities.
 
+The victims of Auschwitz were primarily Jews, who constituted about 90% of the deaths, making it a central site of the Nazis' "Final Solution to the Jewish Question."[@hayes2003auschwitz] However, the camp also held Poles, Romani people, Soviet prisoners of war, and prisoners of various other ethnicities and nationalities. The ethnic diversity of the victims underscores the racially motivated ideology of the Nazi regime, which sought to exterminate what it considered "undesirable" groups. The targeting of Jews, in particular, was driven by deeply ingrained anti-Semitic beliefs, which aimed at their total eradication. The destruction of these communities left lasting scars on the surviving populations and profoundly affected the demographic and cultural landscapes of Europe and beyond.
 
-
-
+In the following part of this essay, I will analyze the number of victims in Auschwitz concentration camp focusing the perspective of ethnic group. 
 
 # Data {#sec-data}
+A dataset of victim list is obtained from the official website of United States Holocaust Memorial Museum. The title of the date set is "AUSCHWITZ DEATH CERTIFICATES 1941-1943 (ID: 49478)". The raw data contains 7 columns and 65280 observations, recording the death book of Auschwitz Concentration Camp prisoners who passed away from July 29, 1941 to December 31, 1943. As an electronic transcript of the original death book, the dataset may not reveal the total number of death due to a lost of data or intentional omission due to political concerns. 
 
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
+When looking at the data of victims in the Holocaust, we should always remind ourselves that they are HUMAN.[@bouie2022we] When conducting data analysis to historical events, we may easily fall in the trap of dehumanization if we only consider data. It is important that we should always remember each observations in this dataset represent an individual who was murdered at that time. Therefore, when we try to analyze and understand the number of victims in the Auscheitz camp, we should pay attention to their ethnic group. 
 
-```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
-#| echo: false
-
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
-
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
+For the data cleaning procedures, I use the programming language R [@citeR] and packages "tidyverse" [@tidyverse], "lubridate" [@lubridate] and "kableextra" [@kable]. Then I use "Shiny" [@shiny] and "DT" [@DT] to produce interactive graphs and tables for better illustration and data visualization. After initial cleaning of data, I also mutate two new columns to calculate the age when the victim died and the Year_Month that they died for next step. For the Religion column, I combined some similar religions to receive only: Jew, Protestant, Catholic, Orthodox, Buddhist, Hussite, Muslim, Atheist, Other and Unkown type. Finally, a cleaned version of the dataset is shown as @tbl-01.  
 
 ```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
 #| echo: false
+#| eval: true
 #| warning: false
 #| message: false
+#| label: tbl-01
+#| tbl-cap: "First ten rows of the cleaned data"
+#| tbl-cap-location: bottom
+#| tbl-pos: H
 
-analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
+cleaned_data <- read_csv(paste0(gsub("/paper", "", getwd()), "/cleaned.csv"))
+table01_data <- head(cleaned_data, 10)
+table_clean <-
+  kable(table01_data, format = "latex", booktabs = TRUE) %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
 
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
+table_clean
 ```
-
-Talk way more about it. 
-
-
-
-# Model
-
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
-## Model set-up
-
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
-
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
-
-
-### Model justification
-
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
 
 # Results
-
-Our results are summarized in @tbl-modelresults.
+We can first take a look at the ethnic group distribution of the whole dataset. As shown in @fig-01, Catholic takes the largest proportion where 29871 of the total victims are Catholic. Jews, which has long been recognized as the main purpose of the Holocaust, follows to be the second largest proportion as 27980 victims are Jews. Other religion groups have much fewer victims. Though Atheist, Othodox and Protestant still have more than 1000 victims, Buddist, Muslim and Hussite have only 1 or 2 victims. 
 
 ```{r}
 #| echo: false
 #| eval: true
 #| warning: false
 #| message: false
+#| label: fig-01
+#| fig-cap: "Number of total victims by ethnic group"
+#| fig-pos: H
+#| fig-width: 7
+#| fig-height: 3
 
-library(rstanarm)
+fig01 <-
+  cleaned_data %>% 
+  group_by(Religion) %>% 
+  summarise(Number = n())
 
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
+ggplot(fig01, aes(x = Religion, y = Number)) + 
+  geom_bar(stat = "identity", fill = "steelblue")+
+  theme_minimal()+
+  labs(x = "Religion Type", y= "Total Number of Victims")
+
 ```
 
+Within each ethnic group, we can obtain the death number in each month. As shown in @fig-02, murder to the Catholic group in the Holocaust varies over the time. Most were killed in Febuary and March, 1943. This may because the rebut to German by English and French army and the expansion of war in the European area. On the other side, most Jews in Auschwitz died in August and September, 1942. Combining the information of both group, we can take a guess that the Holocaust targeting on Jews were comitted and finished in the fall of 1942. Later victims in the camps varied more in their ethnicities.
 ```{r}
 #| echo: false
 #| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
 #| warning: false
-
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
-```
-
-
-
-
-# Discussion
-
-## First discussion point {#sec-first-point}
-
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
-
-## Second discussion point
-
-## Third discussion point
-
-## Weaknesses and next steps
-
-Weaknesses and next steps should also be included.
-
-\newpage
-
-\appendix
-
-# Appendix {-}
-
-
-# Additional data details
-
-# Model details {#sec-model-details}
-
-## Posterior predictive check
-
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
-
-```{r}
-#| eval: true
-#| echo: false
 #| message: false
+#| label: fig-02
+#| fig-cap: "Catholic Victim by month"
+#| fig-pos: H
+#| fig-width: 7
+#| fig-height: 8
+
+fig02 <-
+  cleaned_data %>% 
+  filter(Religion == "Catholic") %>% 
+  group_by(Death_Year_Month) %>% 
+  summarise(Number = n()) %>% 
+  ggplot(aes(x = Death_Year_Month, y = Number)) + 
+  geom_bar(stat = "identity", fill = "steelblue")+
+  theme_minimal()+
+  labs(x = "Death Time", y= "Number of Victims")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+fig03 <-
+  cleaned_data %>% 
+  filter(Religion == "Jew") %>% 
+  group_by(Death_Year_Month) %>% 
+  summarise(Number = n()) %>% 
+  ggplot(aes(x = Death_Year_Month, y = Number)) + 
+  geom_bar(stat = "identity", fill = "steelblue")+
+  theme_minimal()+
+  labs(x = "Death Time", y= "Number of Victims")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+fig02 / fig03
+
+```
+
+To better understand the victims, we can also review the age. Using the birth year and death year recorded in the dataset, we can calculate the age when they passed away. In particular, we control for those age less than 100 to avoid bias of data due to errors. Using box plot in @fig-03, we can see that age variation is similar between Catholic and Jew group. The average age is around 37. Most victims are middle age adult from 25 to 45. More children and babies were murdered in the camp in Catholic group than Jew.
+```{r}
+#| echo: false
+#| eval: true
 #| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
+#| message: false
+#| label: fig-03
+#| fig-cap: "Age of Jew victims"
+#| fig-pos: H
+#| fig-width: 5
+#| fig-height: 3
 
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
+fig04 <-
+  cleaned_data %>% 
+  filter(Religion == "Catholic" | Religion == "Jew") %>% 
+  filter(Age <= 100) %>% 
+  ggplot(aes(x = Religion, y = Age))+
+  geom_boxplot()+
   theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
+  labs(
+    x = "Religion",
+    y = "Age")
+
+fig04
+  
 ```
 
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
-```
-
-
+For better visualization of the number of victims by ethnic groups, an interactive graph is published through Shiny.io at the following link:https://melissazhang.shinyapps.io/holocaust_victim/.
 
 \newpage
-
 
 # References
 
